@@ -1,0 +1,42 @@
+# Functional Requirements
+
+## Authentication
+
+* Login
+* Logout
+* Forgot Password
+
+## Dashboard
+
+* Total Leads
+* Active Customers
+* Today's Follow-ups
+* Tasks
+* Sales Overview
+
+## Lead Management
+
+* Add Lead
+* Edit Lead
+* Delete Lead
+* Assign Lead
+* Lead Status
+
+## Customer Management
+
+* Customer Profile
+* Contact Details
+* Purchase History
+
+## Follow-up Management
+
+* Schedule Follow-up
+* Reminder
+* Notes
+
+## Reports
+
+* Lead Report
+* Sales Report
+* Follow-up Report
+
