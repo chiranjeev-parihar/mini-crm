@@ -1,10 +1,34 @@
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, LogOut } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
+/**
+ * Get initials from a name or email for the avatar.
+ */
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+}
+
 export function Header({ onMenuClick }: HeaderProps) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
+
+  const displayName = user?.name || user?.email || 'User';
+  const initials = getInitials(displayName);
+
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 shadow-sm md:px-6">
       {/* Left section */}
@@ -20,7 +44,9 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         {/* Breadcrumb placeholder */}
         <div className="hidden md:block">
-          <p className="text-sm text-slate-500">Welcome back</p>
+          <p className="text-sm text-slate-500">
+            Welcome back, <span className="font-medium text-slate-700">{displayName}</span>
+          </p>
         </div>
       </div>
 
@@ -42,12 +68,25 @@ export function Header({ onMenuClick }: HeaderProps) {
         {/* User profile */}
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-600 text-sm font-semibold text-white">
-            JD
+            {initials}
           </div>
-          <span className="hidden text-sm font-medium text-slate-700 md:block">
-            John Doe
-          </span>
+          <div className="hidden md:block">
+            <p className="text-sm font-medium text-slate-700">{displayName}</p>
+            {user?.email && (
+              <p className="text-xs text-slate-500">{user.email}</p>
+            )}
+          </div>
         </div>
+
+        {/* Logout button */}
+        <button
+          onClick={handleLogout}
+          className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <LogOut className="h-5 w-5" />
+        </button>
       </div>
     </header>
   );

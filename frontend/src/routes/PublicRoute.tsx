@@ -3,16 +3,16 @@ import { useAuth } from '../hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-interface ProtectedRouteProps {
+interface PublicRouteProps {
   children: ReactNode;
 }
 
 /**
- * Route guard that requires authentication.
- * Redirects unauthenticated users to /login.
+ * Route guard for public-only pages (e.g. login).
+ * Redirects authenticated users to /dashboard.
  * Shows a loading spinner while auth state is initializing.
  */
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function PublicRoute({ children }: PublicRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
@@ -26,8 +26,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

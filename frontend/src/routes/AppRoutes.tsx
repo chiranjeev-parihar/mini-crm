@@ -1,16 +1,24 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { ProtectedRoute } from './ProtectedRoute';
+import { PublicRoute } from './PublicRoute';
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<LoginPage />} />
+      {/* Public Routes — redirect authenticated users to dashboard */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
 
-      {/* Protected Routes */}
+      {/* Protected Routes — redirect unauthenticated users to login */}
       <Route
         element={
           <ProtectedRoute>

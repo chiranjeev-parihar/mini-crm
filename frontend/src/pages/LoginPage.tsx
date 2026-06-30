@@ -1,7 +1,10 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Mail, Lock, LayoutDashboard } from 'lucide-react';
+import { Mail, Lock, LayoutDashboard, AlertCircle } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 const loginSchema = z.object({
   email: z
@@ -17,6 +20,10 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -25,9 +32,16 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    // TODO: Replace with actual API call
-    console.log('Login submitted:', data);
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      setApiError(null);
+      await login({ email: data.email, password: data.password });
+      navigate('/dashboard', { replace: true });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Login failed. Please try again.';
+      setApiError(message);
+    }
   };
 
   return (
@@ -77,6 +91,14 @@ export default function LoginPage() {
               Sign in to your account
             </p>
           </div>
+
+          {/* API error message */}
+          {apiError && (
+            <div className="mb-6 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+              <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-500" />
+              <p className="text-sm text-red-700">{apiError}</p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Email field */}
