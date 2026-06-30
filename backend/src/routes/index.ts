@@ -12,6 +12,9 @@ router.use('/auth', authRoutes);
 // Protected routes — all routes below this line require a valid JWT
 router.use(authenticate);
 
+import { leadRoutes } from './lead.routes';
+router.use('/leads', leadRoutes);
+
 // Protected dashboard endpoint (returns authenticated user info)
 router.get('/dashboard', (_req, res) => {
   res.json({

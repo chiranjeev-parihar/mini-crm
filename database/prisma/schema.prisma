@@ -30,5 +30,39 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  leads     Lead[]
+
   @@map("users")
+}
+
+/// Status of a lead in the sales pipeline
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  NEGOTIATION
+  WON
+  LOST
+}
+
+/// Potential customer/lead
+model Lead {
+  id         String     @id @default(uuid())
+  fullName   String     @map("full_name")
+  company    String?
+  phone      String?
+  email      String?
+  source     String?
+  status     LeadStatus @default(NEW)
+  assignedTo String?    @map("assigned_to")
+  address    String?
+  notes      String?
+
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+
+  assignee   User?      @relation(fields: [assignedTo], references: [id])
+
+  @@map("leads")
 }

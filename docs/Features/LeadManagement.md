@@ -1,0 +1,117 @@
+# Lead Management Module
+
+## Purpose
+
+Manage potential customers from initial enquiry until conversion.
+
+\---
+
+## User Stories
+
+* Add a new lead
+* Edit lead information
+* Delete a lead
+* Search leads
+* Filter leads
+* View lead details
+* Update lead status
+* Assign lead to sales executive
+
+\---
+
+## Lead Fields
+
+* Full Name
+* Company
+* Phone
+* Email
+* Source
+* Status
+* Assigned To
+* Address
+* Notes
+* Created Date
+
+\---
+
+## Lead Status
+
+* New
+* Contacted
+* Qualified
+* Proposal Sent
+* Negotiation
+* Won
+* Lost
+
+\---
+
+## Features
+
+Dashboard Card
+
+Lead List
+
+Search
+
+Filters
+
+Pagination
+
+Create Lead
+
+Edit Lead
+
+Delete Lead
+
+View Lead
+
+Status Badge
+
+Assigned User
+
+\---
+
+## API
+
+GET /api/leads
+
+GET /api/leads/:id
+
+POST /api/leads
+
+PUT /api/leads/:id
+
+DELETE /api/leads/:id
+
+\---
+
+## Database
+
+Lead
+
+* id
+* fullName
+* company
+* phone
+* email
+* source
+* status
+* assignedTo
+* address
+* notes
+* createdAt
+* updatedAt
+
+\---
+
+## Acceptance Criteria
+
+* User can create lead
+* User can edit lead
+* User can delete lead
+* Search works
+* Filter works
+* Pagination works
+* Status updates correctly
+
