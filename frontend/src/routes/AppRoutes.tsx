@@ -7,6 +7,9 @@ import DashboardPage from '../pages/DashboardPage';
 import LeadListPage from '../pages/leads/LeadListPage';
 import LeadFormPage from '../pages/leads/LeadFormPage';
 import LeadViewPage from '../pages/leads/LeadViewPage';
+import CustomerListPage from '../pages/customers/CustomerListPage';
+import CustomerViewPage from '../pages/customers/CustomerViewPage';
+import CustomerEditPage from '../pages/customers/CustomerEditPage';
 
 export function AppRoutes() {
   return (
@@ -31,12 +34,17 @@ export function AppRoutes() {
       >
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        
+
         {/* Lead Management Routes */}
         <Route path="/leads" element={<LeadListPage />} />
         <Route path="/leads/new" element={<LeadFormPage />} />
         <Route path="/leads/:id/edit" element={<LeadFormPage />} />
         <Route path="/leads/:id" element={<LeadViewPage />} />
+
+        {/* Customer Management Routes */}
+        <Route path="/customers" element={<CustomerListPage />} />
+        <Route path="/customers/:id" element={<CustomerViewPage />} />
+        <Route path="/customers/:id/edit" element={<CustomerEditPage />} />
       </Route>
 
       {/* Fallback */}
@@ -44,3 +52,4 @@ export function AppRoutes() {
     </Routes>
   );
 }
+

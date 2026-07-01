@@ -19,6 +19,10 @@ export interface Lead {
   assignedTo?: string;
   address?: string;
   notes?: string;
+  /** Conversion tracking fields */
+  isConverted?: boolean;
+  convertedAt?: string;
+  conversionReason?: string;
   createdAt: string;
   updatedAt: string;
   assignee?: {

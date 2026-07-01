@@ -13,7 +13,10 @@ router.use('/auth', authRoutes);
 router.use(authenticate);
 
 import { leadRoutes } from './lead.routes';
+import { customerRoutes } from './customer.routes';
+
 router.use('/leads', leadRoutes);
+router.use('/customers', customerRoutes);
 
 // Protected dashboard endpoint (returns authenticated user info)
 router.get('/dashboard', (_req, res) => {
@@ -25,3 +28,4 @@ router.get('/dashboard', (_req, res) => {
 });
 
 export { router as routes };
+

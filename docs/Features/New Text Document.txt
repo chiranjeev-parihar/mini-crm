@@ -1,105 +1,67 @@
-# Lead Management Module
+# Authentication Module
 
 ## Purpose
 
-Manage potential customers from initial enquiry until conversion.
+Provide secure access to the Mini CRM using email and password authentication.
+
+---
+
+## User Roles
+
+### Admin
+- Full system access
+
+### Sales Executive
+- Manage assigned leads
+- View dashboard
+- Manage follow-ups
+
+### Sales Manager
+- Manage team
+- Assign leads
+- View reports
 
 ---
 
 ## User Stories
 
-- Add a new lead
-- Edit lead information
-- Delete a lead
-- Search leads
-- Filter leads
-- View lead details
-- Update lead status
-- Assign lead to sales executive
-
----
-
-## Lead Fields
-
-- Full Name
-- Company
-- Phone
-- Email
-- Source
-- Status
-- Assigned To
-- Address
-- Notes
-- Created Date
-
----
-
-## Lead Status
-
-- New
-- Contacted
-- Qualified
-- Proposal Sent
-- Negotiation
-- Won
-- Lost
+- As a user, I want to log in securely.
+- As a user, I should only access protected pages after authentication.
+- As a user, I should remain logged in until my token expires.
+- As a user, I should be able to logout safely.
 
 ---
 
 ## Features
 
-Dashboard Card
-
-Lead List
-
-Search
-
-Filters
-
-Pagination
-
-Create Lead
-
-Edit Lead
-
-Delete Lead
-
-View Lead
-
-Status Badge
-
-Assigned User
+- Login
+- Logout
+- JWT Authentication
+- Password Hashing
+- Protected Routes
+- Role Based Access
 
 ---
 
 ## API
 
-GET /api/leads
+POST /api/auth/login
 
-GET /api/leads/:id
+POST /api/auth/logout
 
-POST /api/leads
-
-PUT /api/leads/:id
-
-DELETE /api/leads/:id
+GET /api/auth/me
 
 ---
 
 ## Database
 
-Lead
+User
 
 - id
-- fullName
-- company
-- phone
+- name
 - email
-- source
-- status
-- assignedTo
-- address
-- notes
+- password
+- role
 - createdAt
 - updatedAt
 
@@ -107,10 +69,8 @@ Lead
 
 ## Acceptance Criteria
 
-- User can create lead
-- User can edit lead
-- User can delete lead
-- Search works
-- Filter works
-- Pagination works
-- Status updates correctly
+- Login works
+- Logout works
+- Invalid credentials show errors
+- JWT validates protected routes
+- Passwords are hashed

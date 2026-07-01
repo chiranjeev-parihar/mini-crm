@@ -48,21 +48,47 @@ enum LeadStatus {
 
 /// Potential customer/lead
 model Lead {
-  id         String     @id @default(uuid())
-  fullName   String     @map("full_name")
-  company    String?
-  phone      String?
-  email      String?
-  source     String?
-  status     LeadStatus @default(NEW)
-  assignedTo String?    @map("assigned_to")
-  address    String?
-  notes      String?
+  id               String     @id @default(uuid())
+  fullName         String     @map("full_name")
+  company          String?
+  phone            String?
+  email            String?
+  source           String?
+  status           LeadStatus @default(NEW)
+  assignedTo       String?    @map("assigned_to")
+  address          String?
+  notes            String?
 
-  createdAt  DateTime   @default(now()) @map("created_at")
-  updatedAt  DateTime   @updatedAt @map("updated_at")
+  /// Conversion tracking
+  isConverted      Boolean    @default(false) @map("is_converted")
+  convertedAt      DateTime?  @map("converted_at")
+  conversionReason String?    @map("conversion_reason")
 
-  assignee   User?      @relation(fields: [assignedTo], references: [id])
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  assignee         User?      @relation(fields: [assignedTo], references: [id])
+  customer         Customer?
 
   @@map("leads")
+}
+
+/// Converted lead customer record — created only via lead conversion
+model Customer {
+  id            String   @id @default(uuid())
+  leadId        String   @unique @map("lead_id")
+  company       String?
+  contactPerson String?  @map("contact_person")
+  phone         String?
+  email         String?
+  address       String?
+  industry      String?
+  notes         String?
+
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  lead          Lead     @relation(fields: [leadId], references: [id])
+
+  @@map("customers")
 }
