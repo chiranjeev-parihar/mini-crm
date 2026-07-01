@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { getLeads, deleteLead } from '../../services/lead.service';
 import { LeadStatus } from '../../types/lead';
-import { Plus, Search, Edit, Trash2, Eye, Loader2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Eye, Loader2, Users } from 'lucide-react';
+import { StatusBadge } from '../../components/ui/StatusBadge';
 
 export default function LeadListPage() {
   const [query, setQuery] = useState('');
@@ -30,18 +31,7 @@ export default function LeadListPage() {
     }
   };
 
-  const getStatusColor = (status: LeadStatus) => {
-    switch (status) {
-      case LeadStatus.NEW: return 'bg-blue-100 text-blue-800';
-      case LeadStatus.CONTACTED: return 'bg-yellow-100 text-yellow-800';
-      case LeadStatus.QUALIFIED: return 'bg-purple-100 text-purple-800';
-      case LeadStatus.PROPOSAL_SENT: return 'bg-indigo-100 text-indigo-800';
-      case LeadStatus.NEGOTIATION: return 'bg-orange-100 text-orange-800';
-      case LeadStatus.WON: return 'bg-green-100 text-green-800';
-      case LeadStatus.LOST: return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+
 
   return (
     <div className="space-y-6">
@@ -99,7 +89,11 @@ export default function LeadListPage() {
         <div className="bg-white shadow overflow-hidden sm:rounded-md border border-gray-200">
           {data?.items.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-sm">No leads found.</p>
+              <Users className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No Leads Found</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Get started by creating a new lead.
+              </p>
             </div>
           ) : (
             <ul className="divide-y divide-gray-200">
@@ -124,9 +118,7 @@ export default function LeadListPage() {
                       </div>
                       <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
                         <div className="flex -space-x-1 overflow-hidden">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${getStatusColor(lead.status)}`}>
-                            {lead.status.replace('_', ' ').toLowerCase()}
-                          </span>
+                          <StatusBadge status={lead.status} type="lead" />
                         </div>
                       </div>
                     </div>

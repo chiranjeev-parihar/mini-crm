@@ -10,6 +10,9 @@ import LeadViewPage from '../pages/leads/LeadViewPage';
 import CustomerListPage from '../pages/customers/CustomerListPage';
 import CustomerViewPage from '../pages/customers/CustomerViewPage';
 import CustomerEditPage from '../pages/customers/CustomerEditPage';
+import FollowUpListPage from '../pages/followups/FollowUpListPage';
+import FollowUpFormPage from '../pages/followups/FollowUpFormPage';
+import FollowUpViewPage from '../pages/followups/FollowUpViewPage';
 
 export function AppRoutes() {
   return (
@@ -45,6 +48,12 @@ export function AppRoutes() {
         <Route path="/customers" element={<CustomerListPage />} />
         <Route path="/customers/:id" element={<CustomerViewPage />} />
         <Route path="/customers/:id/edit" element={<CustomerEditPage />} />
+
+        {/* Follow-up Management Routes */}
+        <Route path="/followups" element={<FollowUpListPage />} />
+        <Route path="/followups/new" element={<FollowUpFormPage />} />
+        <Route path="/followups/:id/edit" element={<FollowUpFormPage />} />
+        <Route path="/followups/:id" element={<FollowUpViewPage />} />
       </Route>
 
       {/* Fallback */}

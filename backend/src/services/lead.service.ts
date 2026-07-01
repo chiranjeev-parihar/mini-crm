@@ -48,6 +48,9 @@ export const getLeadById = async (id: string) => {
       assignee: {
         select: { id: true, name: true, email: true },
       },
+      followUps: {
+        orderBy: { followUpDate: 'desc' }
+      },
     },
   });
 };

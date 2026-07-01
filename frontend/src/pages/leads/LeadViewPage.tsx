@@ -17,6 +17,8 @@ import {
   AlertCircle,
   UserCheck,
 } from 'lucide-react';
+import { FollowUpHistory } from './components/FollowUpHistory';
+import { StatusBadge } from '../../components/ui/StatusBadge';
 
 export default function LeadViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -105,7 +107,7 @@ export default function LeadViewPage() {
                 setConvertError(null);
                 setShowConvertConfirm(true);
               }}
-              className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
             >
               <UserCheck className="w-4 h-4 mr-2" />
               Convert to Customer
@@ -176,7 +178,7 @@ export default function LeadViewPage() {
               id="btn-confirm-convert"
               onClick={() => convertMutation.mutate()}
               disabled={convertMutation.isPending}
-              className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {convertMutation.isPending ? (
                 <>
@@ -212,9 +214,7 @@ export default function LeadViewPage() {
             <h3 className="text-lg leading-6 font-medium text-gray-900">{lead.fullName}</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">{lead.company || 'No Company'}</p>
           </div>
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 capitalize">
-            {lead.status.replace('_', ' ').toLowerCase()}
-          </span>
+          <StatusBadge status={lead.status} type="lead" />
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
@@ -302,6 +302,9 @@ export default function LeadViewPage() {
           </dl>
         </div>
       </div>
+
+      {/* Follow-up History */}
+      <FollowUpHistory leadId={lead.id} followUps={lead.followUps || []} />
     </div>
   );
 }

@@ -19,7 +19,7 @@ const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/leads', label: 'Leads', icon: Users },
   { to: '/customers', label: 'Customers', icon: Building2 },
-  { to: '/follow-ups', label: 'Follow-ups', icon: CalendarClock },
+  { to: '/followups', label: 'Follow-ups', icon: CalendarClock },
   { to: '/tasks', label: 'Tasks', icon: CheckSquare },
   { to: '/reports', label: 'Reports', icon: BarChart3 },
   { to: '/settings', label: 'Settings', icon: Settings },

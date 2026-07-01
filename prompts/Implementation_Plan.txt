@@ -1,168 +1,92 @@
-# Customer Management Module — Implementation Plan
+# Follow-up Management Implementation Plan
 
-## Overview
-
-Implement the **Customer Management** module for Mini CRM. Customers are **only** created by converting a Won Lead. The module provides full CRUD for customer records (except Create directly), lead-to-customer conversion with duplicate protection, and a polished frontend UI matching the existing design language.
-
----
-
-## Architecture Summary
-
-| Layer | Pattern |
-|---|---|
-| Database | Prisma + SQLite (existing) |
-| Backend | Express + TypeScript, Controller → Service → Prisma |
-| Frontend | React + TypeScript + Vite + TailwindCSS + TanStack Query |
-
----
+This document outlines the proposed changes to implement the Follow-up Management module for the Mini CRM.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> The `Customers.md` feature doc lists a `gstNumber` field. The task prompt omits it. This plan includes `gstNumber` as optional (nullable) since the feature doc is the canonical source. If you don't want it, let me know before execution.
-
-> [!IMPORTANT]
-> The existing Prisma schema uses **SQLite** as the provider. SQLite does not support native enums, but Prisma handles this via string mapping — no changes needed to the provider.
-
----
+> The database schema will be updated to include the `FollowUp` model. This requires running `npx prisma db push` or `npx prisma migrate dev`. I will execute the schema changes and migration after you approve this plan.
 
 ## Proposed Changes
 
 ---
 
-### Database — Prisma Schema
+### Database Layer
 
 #### [MODIFY] [schema.prisma](file:///f:/Project_Ishita/Portfolio/MiniCRM/database/prisma/schema.prisma)
-
-Add to the **Lead** model:
-- `isConverted  Boolean   @default(false) @map("is_converted")`
-- `convertedAt  DateTime? @map("converted_at")`
-- `customer     Customer?` (relation)
-
-Add new **Customer** model:
-```prisma
-model Customer {
-  id            String   @id @default(uuid())
-  leadId        String   @unique @map("lead_id")
-  company       String?
-  contactPerson String?  @map("contact_person")
-  phone         String?
-  email         String?
-  gstNumber     String?  @map("gst_number")
-  address       String?
-  industry      String?
-  notes         String?
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  lead          Lead     @relation(fields: [leadId], references: [id])
-  @@map("customers")
-}
-```
+Add the `FollowUp` model, `FollowUpType` enum, and `FollowUpStatus` enum.
+- Fields: `id`, `leadId`, `followUpDate`, `followUpTime`, `type`, `status`, `notes`, `outcome`, `nextFollowUpDate`, `createdBy`, `createdAt`, `updatedAt`
+- Relations: Link `FollowUp` to `Lead` (many-to-one) and `User` (many-to-one for createdBy).
 
 ---
 
-### Backend
+### Backend Layer
 
-#### [NEW] `backend/src/services/customer.service.ts`
-- `getCustomers(query, page, limit)` — search by company/contactPerson/email
-- `getCustomerById(id)`
-- `updateCustomer(id, data)`
-- `deleteCustomer(id)`
-- `convertLeadToCustomer(leadId)` — business rule enforcement here
+#### [NEW] [followup.routes.ts](file:///f:/Project_Ishita/Portfolio/MiniCRM/backend/src/routes/followup.routes.ts)
+- `GET /followups`
+- `GET /followups/today`
+- `GET /followups/upcoming`
+- `GET /followups/:id`
+- `POST /followups`
+- `PUT /followups/:id`
+- `DELETE /followups/:id`
 
-#### [NEW] `backend/src/controllers/customer.controller.ts`
-- `getCustomers` — GET /customers
-- `getCustomerById` — GET /customers/:id
-- `updateCustomer` — PUT /customers/:id
-- `deleteCustomer` — DELETE /customers/:id
-- `convertLead` — POST /leads/:id/convert
+#### [NEW] [followup.controller.ts](file:///f:/Project_Ishita/Portfolio/MiniCRM/backend/src/controllers/followup.controller.ts)
+Implementation for the CRUD operations and custom queries (today, upcoming). Protect all endpoints with JWT middleware. Enforce business rules (e.g., completed follow-ups cannot be edited).
 
-#### [NEW] `backend/src/routes/customer.routes.ts`
-- Wire all customer controller methods
+#### [MODIFY] [index.ts (routes)](file:///f:/Project_Ishita/Portfolio/MiniCRM/backend/src/routes/index.ts)
+- Mount `followupRoutes` under `/followups`.
+- Update the `/dashboard` endpoint to calculate and return real statistics for Follow-ups: Today's Follow-ups, Upcoming, Missed, Completed Today.
 
-#### [MODIFY] `backend/src/routes/lead.routes.ts`
-- Add `POST /:id/convert` route pointing to `customerController.convertLead`
-
-#### [MODIFY] `backend/src/routes/index.ts`
-- Register `customerRoutes` at `/customers`
+#### [NEW] [followup.d.ts](file:///f:/Project_Ishita/Portfolio/MiniCRM/backend/src/types/followup.d.ts)
+Type definitions for FollowUp interfaces used in controllers.
 
 ---
 
-### Frontend — Types
+### Frontend Layer
 
-#### [NEW] `frontend/src/types/customer.ts`
-- `Customer` interface
-- `PaginatedCustomers` interface
+#### [NEW] [followup.service.ts](file:///f:/Project_Ishita/Portfolio/MiniCRM/frontend/src/services/followup.service.ts)
+API client functions for Follow-up endpoints.
 
-#### [MODIFY] `frontend/src/types/lead.ts`
-- Add `isConverted?: boolean` and `convertedAt?: string` to `Lead` interface
+#### [NEW] [followup.ts (types)](file:///f:/Project_Ishita/Portfolio/MiniCRM/frontend/src/types/followup.ts)
+Frontend typescript interfaces for `FollowUp`, `FollowUpType`, and `FollowUpStatus`.
 
----
+#### [NEW] Follow-up Pages & Components
+- `FollowUpListPage.tsx`: Displays list of follow-ups with filters (today, upcoming, missed).
+- `FollowUpFormPage.tsx`: Form for adding/editing follow-ups.
+- `FollowUpViewPage.tsx`: Detailed view of a follow-up.
+- `FollowUpHistory.tsx`: Component to embed within the Lead Details page.
 
-### Frontend — Services
+#### [MODIFY] [AppRoutes.tsx](file:///f:/Project_Ishita/Portfolio/MiniCRM/frontend/src/routes/AppRoutes.tsx)
+Register new routes for Follow-ups (`/followups`, `/followups/new`, `/followups/:id`, etc.).
 
-#### [NEW] `frontend/src/services/customer.service.ts`
-- `getCustomers(query, page, limit)`
-- `getCustomerById(id)`
-- `updateCustomer(id, data)`
-- `deleteCustomer(id)`
-- `convertLead(leadId)` — POST /leads/:id/convert
+#### [MODIFY] [LeadViewPage.tsx](file:///f:/Project_Ishita/Portfolio/MiniCRM/frontend/src/pages/leads/LeadViewPage.tsx)
+Integrate `FollowUpHistory` component. Add a button to "Add Follow-up" directly from the Lead details view.
 
----
+#### [MODIFY] [DashboardPage.tsx](file:///f:/Project_Ishita/Portfolio/MiniCRM/frontend/src/pages/DashboardPage.tsx)
+Update the static dashboard to consume the updated `/dashboard` API endpoint and display:
+- Today's Follow-ups
+- Upcoming Follow-ups
+- Missed Follow-ups (highlighted in red)
+- Completed Today
 
-### Frontend — Pages
-
-#### [NEW] `frontend/src/pages/customers/CustomerListPage.tsx`
-- Paginated table: Company, Contact Person, Phone, Email, Industry
-- Search input
-- Empty state, loading skeleton
-- View / Edit / Delete actions
-
-#### [NEW] `frontend/src/pages/customers/CustomerViewPage.tsx`
-- Full customer profile card
-- Link back to originating lead
-- Breadcrumb navigation
-
-#### [NEW] `frontend/src/pages/customers/CustomerEditPage.tsx`
-- Edit form (all editable fields except leadId)
-- React Hook Form + Zod validation
-- Save / Cancel with toast feedback
-
----
-
-### Frontend — Lead Module Changes
-
-#### [MODIFY] `frontend/src/pages/leads/LeadViewPage.tsx`
-- Show **"Convert to Customer"** button when `lead.status === 'WON'` and `!lead.isConverted`
-- Show **"Converted"** badge (green) when `lead.isConverted === true`
-- On conversion success: invalidate `['lead', id]` query, navigate to `/customers`
-
----
-
-### Frontend — Routing
-
-#### [MODIFY] `frontend/src/routes/AppRoutes.tsx`
-- Add `/customers` → `CustomerListPage`
-- Add `/customers/:id` → `CustomerViewPage`
-- Add `/customers/:id/edit` → `CustomerEditPage`
+#### [MODIFY] [AppLayout.tsx](file:///f:/Project_Ishita/Portfolio/MiniCRM/frontend/src/components/layout/AppLayout.tsx)
+Add "Follow-ups" to the sidebar navigation menu.
 
 ---
 
 ## Verification Plan
 
-### Migration Command
-```bash
-cd database && npx prisma migrate dev --name add_customer_conversion
-```
+### Automated Tests
+- Run `npm run build` in both frontend and backend to verify TypeScript compilations.
 
-### Automated Tests (Manual Steps)
-1. **Convert Won Lead** → Customer record created, Lead marked `isConverted=true`
-2. **Convert again** → API returns 409 Conflict
-3. **Convert non-Won lead** → API returns 400 with correct message
-4. **GET /customers** → Lists converted customers with search/pagination
-5. **GET /customers/:id** → Returns single customer
-6. **PUT /customers/:id** → Updates customer
-7. **DELETE /customers/:id** → Removes customer
-8. **Frontend**: Won lead shows "Convert to Customer" button
-9. **Frontend**: After conversion, button replaced by "Converted" badge
-10. **Frontend**: Customer List, View, Edit pages all functional
+### Manual Verification
+- Start the server and frontend.
+- Go to Dashboard, verify widgets.
+- Create a Lead.
+- From Lead Details, schedule a Follow-up.
+- Check Follow-up History in Lead Details.
+- Go to Follow-ups list, edit the pending follow-up.
+- Complete the follow-up, provide an outcome, and schedule the next follow-up.
+- Attempt to edit the completed follow-up (should be prevented).
+- Verify Missed follow-ups appear in red.

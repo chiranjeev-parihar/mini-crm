@@ -30,6 +30,7 @@ export interface Lead {
     name: string;
     email: string;
   };
+  followUps?: any[]; // Avoiding direct circular import if it causes issues, but let's try any[] first or just import it. Let me just import it properly.
 }
 
 export interface PaginatedLeads {

@@ -31,6 +31,7 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   leads     Lead[]
+  followUps FollowUp[]
 
   @@map("users")
 }
@@ -69,6 +70,7 @@ model Lead {
 
   assignee         User?      @relation(fields: [assignedTo], references: [id])
   customer         Customer?
+  followUps        FollowUp[]
 
   @@map("leads")
 }
@@ -91,4 +93,56 @@ model Customer {
   lead          Lead     @relation(fields: [leadId], references: [id])
 
   @@map("customers")
+}
+
+/// Priority of a follow-up
+enum FollowUpPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+/// Type of follow-up interaction
+enum FollowUpType {
+  PHONE_CALL
+  WHATSAPP
+  EMAIL
+  MEETING
+  SITE_VISIT
+  DEMO
+  OTHER
+}
+
+/// Status of the follow-up
+enum FollowUpStatus {
+  PENDING
+  COMPLETED
+  MISSED
+  CANCELLED
+}
+
+/// Follow-up interaction with a lead
+model FollowUp {
+  id               String           @id @default(uuid())
+  leadId           String           @map("lead_id")
+  followUpDate     DateTime         @map("follow_up_date") // Date part
+  followUpTime     String?          @map("follow_up_time") // Time part (HH:mm)
+  reminderTime     String?          @map("reminder_time")  // Reminder time
+  type             FollowUpType     @default(PHONE_CALL)
+  status           FollowUpStatus   @default(PENDING)
+  priority         FollowUpPriority @default(MEDIUM)
+  notes            String?
+  outcomeNotes     String?          @map("outcome_notes")
+  nextFollowUpDate DateTime?        @map("next_follow_up_date")
+  
+  createdBy        String           @map("created_by")
+
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  lead             Lead             @relation(fields: [leadId], references: [id])
+  creator          User             @relation(fields: [createdBy], references: [id])
+
+  @@map("follow_ups")
 }
