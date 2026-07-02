@@ -1,5 +1,5 @@
 import { Lead, PaginatedLeads } from '../types/lead';
-import { get, post, put, del } from './api';
+import { get, post, put } from './api';
 
 export const getLeads = async (
   query = '',
@@ -33,6 +33,3 @@ export const updateLead = async (id: string, data: Partial<Lead>): Promise<Lead>
   return result.data;
 };
 
-export const deleteLead = async (id: string): Promise<void> => {
-  await del(`/leads/${id}`);
-};

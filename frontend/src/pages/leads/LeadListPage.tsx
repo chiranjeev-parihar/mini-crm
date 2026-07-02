@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { getLeads, deleteLead } from '../../services/lead.service';
+import { getLeads } from '../../services/lead.service';
 import { LeadStatus } from '../../types/lead';
-import { Plus, Search, Edit, Trash2, Eye, Loader2, Users } from 'lucide-react';
+import { Plus, Search, Edit, Eye, Loader2, Users } from 'lucide-react';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 
 export default function LeadListPage() {
@@ -11,25 +11,14 @@ export default function LeadListPage() {
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
   const limit = 10;
-  const queryClient = useQueryClient();
+
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['leads', query, status, page],
     queryFn: () => getLeads(query, status, page, limit),
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteLead,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['leads'] });
-    },
-  });
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this lead?')) {
-      deleteMutation.mutate(id);
-    }
-  };
 
 
 
@@ -118,7 +107,7 @@ export default function LeadListPage() {
                       </div>
                       <div className="mt-4 flex-shrink-0 sm:mt-0 sm:ml-5">
                         <div className="flex -space-x-1 overflow-hidden">
-                          <StatusBadge status={lead.status} type="lead" />
+                          <StatusBadge status={lead.status} />
                         </div>
                       </div>
                     </div>
@@ -129,9 +118,6 @@ export default function LeadListPage() {
                       <Link to={`/leads/${lead.id}/edit`} className="text-blue-400 hover:text-blue-500">
                         <Edit className="w-5 h-5" />
                       </Link>
-                      <button onClick={() => handleDelete(lead.id)} className="text-red-400 hover:text-red-500">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
                     </div>
                   </div>
                 </li>

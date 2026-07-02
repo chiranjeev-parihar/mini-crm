@@ -30,8 +30,10 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  leads     Lead[]
-  followUps FollowUp[]
+  leads         Lead[]
+  followUps     FollowUp[]
+  assignedTasks Task[]     @relation("AssignedTasks")
+  createdTasks  Task[]     @relation("CreatedTasks")
 
   @@map("users")
 }
@@ -71,6 +73,7 @@ model Lead {
   assignee         User?      @relation(fields: [assignedTo], references: [id])
   customer         Customer?
   followUps        FollowUp[]
+  tasks            Task[]
 
   @@map("leads")
 }
@@ -91,6 +94,7 @@ model Customer {
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   lead          Lead     @relation(fields: [leadId], references: [id])
+  tasks         Task[]
 
   @@map("customers")
 }
@@ -145,4 +149,45 @@ model FollowUp {
   creator          User             @relation(fields: [createdBy], references: [id])
 
   @@map("follow_ups")
+}
+
+/// Priority level of a task
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+/// Lifecycle status of a task
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+/// Internal work item assigned to a team member, optionally linked to a Lead or Customer
+model Task {
+  id             String       @id @default(uuid())
+  title          String
+  description    String?
+  assignedUserId String       @map("assigned_user_id")
+  leadId         String?      @map("lead_id")
+  customerId     String?      @map("customer_id")
+  createdBy      String       @map("created_by")
+  dueDate        DateTime     @map("due_date")
+  priority       TaskPriority @default(MEDIUM)
+  status         TaskStatus   @default(PENDING)
+  remarks        String?
+
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  assignedUser   User         @relation("AssignedTasks", fields: [assignedUserId], references: [id])
+  creator        User         @relation("CreatedTasks", fields: [createdBy], references: [id])
+  lead           Lead?        @relation(fields: [leadId], references: [id])
+  customer       Customer?    @relation(fields: [customerId], references: [id])
+
+  @@map("tasks")
 }

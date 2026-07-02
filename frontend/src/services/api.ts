@@ -47,6 +47,11 @@ async function request<T>(
     headers,
   });
 
+  const data = await response.json().catch(() => ({
+    success: false,
+    message: 'An unexpected error occurred',
+  }));
+
   // Handle 401 — clear token and redirect to login
   if (response.status === 401) {
     removeStoredToken();
@@ -54,16 +59,13 @@ async function request<T>(
     if (!window.location.pathname.includes('/login')) {
       window.location.href = '/login';
     }
-    throw new Error('Session expired. Please log in again.');
+    // For login failures, show the actual error. Otherwise show session expired.
+    const isAuthRoute = endpoint.includes('/auth/login');
+    throw new Error(isAuthRoute ? data.message : 'Session expired. Please log in again.');
   }
 
-  const data = await response.json().catch(() => ({
-    success: false,
-    message: 'An unexpected error occurred',
-  }));
-
   if (!response.ok) {
-    throw new Error(data.message || 'An error occurred');
+    throw new Error(data.error || data.message || 'An error occurred');
   }
 
   return data as T;

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { createFollowUp, updateFollowUp, getFollowUpById } from '../../services/followup.service';
@@ -30,7 +30,7 @@ export default function FollowUpFormPage() {
     enabled: isEditing,
   });
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<FollowUpFormData>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<FollowUpFormData>({
     defaultValues: {
       leadId: leadId || '',
       followUpDate: new Date().toISOString().split('T')[0],

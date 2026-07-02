@@ -135,21 +135,3 @@ export const updateLead = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteLead = async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id as string;
-    await leadService.deleteLead(id);
-
-    res.status(200).json({
-      success: true,
-      message: 'Lead deleted successfully',
-      data: null,
-    } satisfies ApiResponse);
-  } catch (error) {
-    console.error('Error deleting lead:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
-    } satisfies ApiResponse);
-  }
-};

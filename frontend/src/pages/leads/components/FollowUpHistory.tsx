@@ -33,7 +33,7 @@ export function FollowUpHistory({ leadId, followUps }: FollowUpHistoryProps) {
         effectiveStatus = 'PENDING';
       }
     }
-    return <StatusBadge status={effectiveStatus} type="followup" />;
+    return <StatusBadge status={effectiveStatus} />;
   };
 
   return (

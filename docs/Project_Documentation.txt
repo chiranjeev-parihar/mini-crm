@@ -1,0 +1,50 @@
+Read the following project documentation before generating any code:
+
+# Core Documentation (Mandatory)
+
+docs/PRD.md
+docs/Requirements.md
+docs/Database.md
+docs/API.md
+docs/UserFlow.md
+
+# Product Rules (Mandatory)
+
+docs/BUSINESS_RULES.md
+docs/CODING_STANDARDS.md
+docs/UI_GUIDELINES.md
+docs/ARCHITECTURE_DECISIONS.md
+
+# Project Status (Mandatory)
+
+docs/ROADMAP.md
+
+# Feature Documentation
+
+docs/Features/<CurrentFeature>.md
+
+# AI Instructions
+
+prompts/MASTER_PROMPT.md
+prompts/AI_RULES.md
+
+Read ALL documents completely before generating code.
+
+If any requirement conflicts, follow this priority order:
+
+1. BUSINESS_RULES.md
+2. ARCHITECTURE_DECISIONS.md
+3. CODING_STANDARDS.md
+4. UI_GUIDELINES.md
+5. Feature Documentation
+6. ROADMAP.md
+7. PRD.md
+8. Requirements.md
+
+Do not ignore previously implemented business rules.
+
+Do not redesign completed modules.
+
+Implement ONLY the requested feature.
+
+Maintain backward compatibility with all existing functionality.

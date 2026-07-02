@@ -13,6 +13,9 @@ import CustomerEditPage from '../pages/customers/CustomerEditPage';
 import FollowUpListPage from '../pages/followups/FollowUpListPage';
 import FollowUpFormPage from '../pages/followups/FollowUpFormPage';
 import FollowUpViewPage from '../pages/followups/FollowUpViewPage';
+import TaskListPage from '../pages/tasks/TaskListPage';
+import TaskFormPage from '../pages/tasks/TaskFormPage';
+import TaskViewPage from '../pages/tasks/TaskViewPage';
 
 export function AppRoutes() {
   return (
@@ -54,6 +57,12 @@ export function AppRoutes() {
         <Route path="/followups/new" element={<FollowUpFormPage />} />
         <Route path="/followups/:id/edit" element={<FollowUpFormPage />} />
         <Route path="/followups/:id" element={<FollowUpViewPage />} />
+
+        {/* Task Management Routes */}
+        <Route path="/tasks" element={<TaskListPage />} />
+        <Route path="/tasks/new" element={<TaskFormPage />} />
+        <Route path="/tasks/:id/edit" element={<TaskFormPage />} />
+        <Route path="/tasks/:id" element={<TaskViewPage />} />
       </Route>
 
       {/* Fallback */}

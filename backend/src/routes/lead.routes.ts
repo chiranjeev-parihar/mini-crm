@@ -8,7 +8,7 @@ router.get('/', leadController.getLeads);
 router.get('/:id', leadController.getLeadById);
 router.post('/', leadController.createLead);
 router.put('/:id', leadController.updateLead);
-router.delete('/:id', leadController.deleteLead);
+
 
 // Lead → Customer conversion
 router.post('/:id/convert', customerController.convertLead);

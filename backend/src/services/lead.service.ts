@@ -68,8 +68,4 @@ export const updateLead = async (id: string, data: any) => {
   });
 };
 
-export const deleteLead = async (id: string) => {
-  return prisma.lead.delete({
-    where: { id },
-  });
-};
+

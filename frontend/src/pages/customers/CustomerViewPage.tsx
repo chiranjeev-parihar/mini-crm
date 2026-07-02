@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   ExternalLink,
 } from 'lucide-react';
+import { TasksSection } from '../tasks/components/TasksSection';
 
 export default function CustomerViewPage() {
   const { id } = useParams<{ id: string }>();
@@ -232,6 +233,9 @@ export default function CustomerViewPage() {
           </div>
         </div>
       )}
+
+      {/* Tasks */}
+      <TasksSection customerId={customer.id} allowCreate={true} />
     </div>
   );
 }

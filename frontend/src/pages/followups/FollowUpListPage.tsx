@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { getFollowUps } from '../../services/followup.service';
-import { FollowUpStatus, FollowUpType, FollowUpPriority } from '../../types/followup';
-import { Loader2, Calendar, Clock, Plus, Phone, Mail, MapPin, MonitorPlay, MessageCircle, AlertCircle, Building, Users } from 'lucide-react';
+import { FollowUpStatus, FollowUpType } from '../../types/followup';
+import { Loader2, Calendar, Clock, Phone, Mail, MapPin, MonitorPlay, MessageCircle, AlertCircle, Users } from 'lucide-react';
 import { format, isPast, isToday } from 'date-fns';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 
@@ -52,7 +52,7 @@ export default function FollowUpListPage() {
         effectiveStatus = 'PENDING';
       }
     }
-    return <StatusBadge status={effectiveStatus} type="followup" />;
+    return <StatusBadge status={effectiveStatus} />;
   };
 
   const filteredFollowUps = followUps?.filter(f => {
@@ -114,7 +114,7 @@ export default function FollowUpListPage() {
                         </div>
                         <div>
                           <p className={`text-sm font-medium truncate ${isMissed ? 'text-red-600' : 'text-blue-600'}`}>
-                            {f.lead?.fullName || f.lead?.company || 'Unknown Lead'}
+                            {typeof f.lead === 'string' ? f.lead : (f.lead?.fullName || 'Unknown Lead')}
                           </p>
                           <div className="flex items-center mt-1 text-xs text-gray-500 space-x-4">
                             <span className="flex items-center gap-1">

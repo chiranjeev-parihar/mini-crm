@@ -18,6 +18,7 @@ import {
   UserCheck,
 } from 'lucide-react';
 import { FollowUpHistory } from './components/FollowUpHistory';
+import { TasksSection } from '../tasks/components/TasksSection';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 
 export default function LeadViewPage() {
@@ -41,6 +42,7 @@ export default function LeadViewPage() {
       // Refresh lead data to show Converted badge
       queryClient.invalidateQueries({ queryKey: ['lead', id] });
       queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       // Navigate to the new customer profile
       navigate(`/customers/${customer.id}`);
     },
@@ -214,7 +216,7 @@ export default function LeadViewPage() {
             <h3 className="text-lg leading-6 font-medium text-gray-900">{lead.fullName}</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">{lead.company || 'No Company'}</p>
           </div>
-          <StatusBadge status={lead.status} type="lead" />
+          <StatusBadge status={lead.status} />
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
@@ -305,6 +307,9 @@ export default function LeadViewPage() {
 
       {/* Follow-up History */}
       <FollowUpHistory leadId={lead.id} followUps={lead.followUps || []} />
+
+      {/* Tasks */}
+      <TasksSection leadId={lead.id} allowCreate={lead.status !== LeadStatus.LOST} />
     </div>
   );
 }
